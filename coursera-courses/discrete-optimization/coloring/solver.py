@@ -8,10 +8,7 @@ from collections import deque
 
 def propagate_vertex_swap(colors: List, color_chosen: int, color_to_swap_to: int, graph: Dict[int, List[int]]) -> List[int]:
     """
-    Returns new colors array with highest_color_vertex swapped with it's adjacent nodes
-    :param colors:
-    :param highest_color_vertex:
-    :return:
+    Returns new colors array with highest_color_vertex swapped with its adjacent nodes
     """
 
     vertices_to_process = deque()
@@ -99,10 +96,6 @@ def solve_it(input_data):
             # Assign the least possible value in domain for each vertex
             colors[vertex] = min(possible_colors)
 
-        for neighbor in graph[vertex]:
-            if len(graph[neighbor]) == 1:
-                colors[neighbor] = 1
-
     # Check if the answer is correct
     for vertex in sorted_keys_by_edges:
         assigned_color = colors[vertex]
@@ -113,21 +106,21 @@ def solve_it(input_data):
 
     start_time = time.time()
 
-    print(max(colors))
+    # print(max(colors))
     min_so_far = max(colors)
 
-    # try:
-    #     # Iteratively improve the answer by selecting a vertex and changing it another color
-    #     for color_1 in range(min_so_far)[::-1]:
-    #         for color_2 in range(min_so_far):
-    #             # Skip similar colors
-    #             if color_1 == color_2:
-    #                 continue
-    #             if time.time() - start_time > 60:
-    #                 raise TimeoutError()
-    #             colors = min(propagate_vertex_swap(colors, color_1, color_2, graph), colors, key=lambda x: max(x))
-    # except TimeoutError as e:
-    #     print(e)
+    try:
+        # Iteratively improve the answer by selecting a vertex and changing it another color
+        for vertex in range(node_count):
+            for color in range(min_so_far):
+                # Skip similar colors
+                if colors[vertex] == color:
+                    continue
+                if time.time() - start_time > 300:
+                    raise TimeoutError()
+                colors = min(propagate_vertex_swap(colors, colors[vertex], color, graph), colors, key=lambda x: max(x))
+    except TimeoutError as e:
+        print(e)
 
     print(max(colors))
 
@@ -138,8 +131,6 @@ def solve_it(input_data):
 
     return output_data
 
-
-import sys
 
 if __name__ == '__main__':
     import sys
