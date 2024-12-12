@@ -31,6 +31,8 @@ def propagate_vertex_swap(colors: List, color_chosen: int, color_to_swap_to: int
         # If there's an available color less than the current color
         available_colors = set(range(color_chosen)) - {colors[neighbor] for neighbor in graph[vertex]}
 
+        # We can explore the neighbors as well
+
         if available_colors:
             color = min(available_colors)
             colors[vertex] = color

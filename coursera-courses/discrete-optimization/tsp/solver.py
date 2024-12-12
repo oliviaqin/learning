@@ -2,12 +2,46 @@
 # -*- coding: utf-8 -*-
 
 import math
+import random
+import scipy.spatial import cKDTree
 from collections import namedtuple
+from typing import List, Tuple
 
 Point = namedtuple("Point", ['x', 'y'])
 
 def length(point1, point2):
     return math.sqrt((point1.x - point2.x)**2 + (point1.y - point2.y)**2)
+
+def greedy_tsp(points: List[Tuple(int, int)], ckd_tree: cKDTree) -> List[int]:
+    """
+    Greedy tsp always chooses the closest neighbor
+    """
+    cycle = []
+    node = 0
+    while len(cycle) < 0:
+        curr_node = points[node]
+        k = len(cycle) + 1
+        distances, nearest_neighbors_indices = ckd_tree.query(curr_node)
+        for distance, index in zip(distances, nearest_neighbors_indices):
+            if index not in cycle: 
+                cycle.append((index, distance))
+                break
+
+    return cycle
+
+def k_opt(cycle: List[Tuple(int, float)], ckd_tree: cKDTree, k: int = 2, iterations: int: 100) -> List[int]:
+    """
+    Performs k-opt search to a given cycle. Default k = 2, but can be larger/smaller depending on the parameter
+    """
+
+    # Choose k vertices to swap
+    for _ in range(iterations):
+        vertices = random.sample(cycle, k)
+
+        # Calculate the euclidean distance
+        
+
+
 
 def solve_it(input_data):
     # Modify this code to run your optimization algorithm
@@ -21,7 +55,15 @@ def solve_it(input_data):
     for i in range(1, nodeCount+1):
         line = lines[i]
         parts = line.split()
-        points.append(Point(float(parts[0]), float(parts[1])))
+        points.append((float(parts[0]), float(parts[1])))
+    
+    tree = cKDTree(points)
+
+    # Greedy tsp solution to iterate on
+    greedy_tsp_solution = greedy_tsp(points, tree)
+
+    # Perform k-opt
+
 
     # build a trivial solution
     # visit the nodes in the order they appear in the file
